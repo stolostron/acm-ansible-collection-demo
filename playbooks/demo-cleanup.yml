@@ -1,0 +1,39 @@
+# create credential type on ansible tower 
+- name: "Cleanup ACM Ansible Collection the Demo"
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: "Disable 'Cluster Proxy' Feature on ACM Hub"
+    stolostron.core.cluster_management_addon:
+      state: absent
+      hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
+      addon_name: cluster-proxy
+  - name: "Disable 'Manged ServiceAccount' Feature on ACM Hub"
+    stolostron.core.cluster_management_addon:
+      state: absent
+      hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
+      addon_name: managed-serviceaccount
+  - name: "Remove 'K8S MultiCluster Management Demo' Job Template"
+    awx.awx.job_template:
+      name: "K8S MultiCluster Management Demo"
+      state: absent
+  - name: "Remove 'ACM Cluster Inventory'"
+    awx.awx.inventory:
+      name: "ACM Cluster Inventory"
+      organization: "Default"
+      state: absent
+  - name: "Remove 'ACM Ansible Collection Demo Project' from this github project"
+    awx.awx.project:
+      name: "ACM Ansible Collection Demo"
+      state: absent
+  - name: "Remove 'ACM Hub' Credential"
+    awx.awx.credential:
+      name: "ACM Hub"
+      organization: "Default"
+      credential_type: "ACM KubeConfig"
+      state: absent
+  - name: "Remove 'ACM KubeConfig' Credential Type"
+    awx.awx.credential_type:
+      name: "ACM KubeConfig"
+      kind: "cloud"
+      state: absent

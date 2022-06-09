@@ -1,5 +1,5 @@
 collections:
 - name: stolostron.core
   version: 0.0.1-alpha
-  source: https://galaxy.ansible.com
-- kubernetes.core
+- name: kubernetes.core
+- name: awx.awx
