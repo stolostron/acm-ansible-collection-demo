@@ -10,6 +10,7 @@ https://galaxy.ansible.com/stolostron/core
 ## Set up and run the demo from Ansible Automation Controller
 ### Prerequisites
 - [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+- [AWX CLI](https://docs.ansible.com/automation-controller/latest/html/controllercli/index.html)
 - A working deployment of [Ansible Automation Controller](https://www.ansible.com/products/controller)
 - A working deployment of [Red Hat Advance Cluster Management](https://www.redhat.com/en/technologies/management/advanced-cluster-management) 2.5+
 - Kubernetes clusters managed by Red Hat Advance Cluster Management
@@ -101,6 +102,7 @@ The demo setup playbook will:
 ## Set up and run the demo without Ansible Automation Controller
 ### Prerequisites
 - [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+- [AWX CLI](https://docs.ansible.com/automation-controller/latest/html/controllercli/index.html)
 - An working deployment of [Red Hat Advance Cluster Management](https://www.redhat.com/en/technologies/management/advanced-cluster-management) 2.5+
 - Kubernetes cluster managed by [Red Hat Advance Cluster Management](https://www.redhat.com/en/technologies/management/advanced-cluster-management)
 
