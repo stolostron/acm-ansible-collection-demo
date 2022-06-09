@@ -1,4 +1,3 @@
-# create credential type on ansible tower 
 - name: "Cleanup ACM Ansible Collection the Demo"
   hosts: localhost
   gather_facts: false

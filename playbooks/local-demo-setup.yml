@@ -1,0 +1,14 @@
+- name: "Setup ACM Ansible Collection the Demo"
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: "Enable 'Cluster Proxy' Feature on ACM Hub"
+    stolostron.core.cluster_management_addon:
+      hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
+      addon_name: cluster-proxy
+      state: present
+  - name: "Enable 'Manged ServiceAccount' Feature on ACM Hub"
+    stolostron.core.cluster_management_addon:
+      hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
+      addon_name: managed-serviceaccount
+      state: present

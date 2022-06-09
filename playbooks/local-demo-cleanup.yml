@@ -1,0 +1,14 @@
+- name: "Cleanup ACM Ansible Collection the Demo"
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: "Disable 'Cluster Proxy' Feature on ACM Hub"
+    stolostron.core.cluster_management_addon:
+      state: absent
+      hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
+      addon_name: cluster-proxy
+  - name: "Disable 'Manged ServiceAccount' Feature on ACM Hub"
+    stolostron.core.cluster_management_addon:
+      state: absent
+      hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
+      addon_name: managed-serviceaccount

@@ -1,27 +1,27 @@
 # acm-ansible-collection-demo
-A collection of playbooks that show of the capability of the ACM Ansible Collection 
+A collection of playbooks that show of the capability of the Red Hat Advance Cluster Management(ACM) Ansible Collection 
 https://galaxy.ansible.com/stolostron/core
 
+## Table of Contents
+* [Setup and run the demo from Ansible Automation Controller](#setup-and-run-the-demo-from-ansible-automation-controller)
+* [Setup and run the demo without Ansible Automation Controller](#setup-and-run-the-demo-without-ansible-automation-controller)
+* [Modification that you can do to the demo (DEFINATELY TRY THIS!)](#modification-that-you-can-do-to-the-demo-definately-try-this)
+
 ## Setup and run the demo from Ansible Automation Controller
-
 ### Prerequisites
-- an working deployment of ACM 2.5
-- an working deployment of Ansible Automation Controller
-- ansible
+- Ansible
+- A working deployment of Ansible Automation Controller
+- A working deployment of Red Hat Advance Cluster Management 2.5+
+- Kubernetes clusters managed by Red Hat Advance Cluster Management
 
-### Modification that you can do to the demo
-- Modify the dynamic inventory grouping in `inventories/cluster-inventory-example.yml`
-- Add your own cool scenario in the `roles/cool-things-you-do` role
-- Modify `playbooks/cluster-mgmt.yml` to run `roles/cool-things-you-do`
-
-### Setup
-- fork this repository in GitHub
-- clone the forked repo to your local machine
-- change directory to the cloned repo
+### Demo setup
+#### Fork and Clone this repository to your local machine
+#### Change directory to the cloned repo
 ```bash
 cd acm-ansible-collection-demo
 ```
-- Setup environment variable for Ansible Automation Controller
+
+#### Setup environment variable for Ansible Automation Controller
 ```bash
 export CONTROLLER_HOST=<ansible automation controller URL>
 export CONTROLLER_USERNAME=<username>
@@ -29,16 +29,18 @@ export CONTROLLER_PASSWORD=<password>
 export CONTROLLER_TOKEN=`awx login | jq -r .token`
 export CONTROLLER_VERIFY_SSL=no
 ```
-- Setup environment variable for ACM Ansible Collection modules
+
+#### Setup environment variable for ACM Ansible Collection modules
 ```bash
-export K8S_AUTH_KUBECONFIG=<path to kubeconfig file>
+export K8S_AUTH_KUBECONFIG=<path to kubeconfig file for ACM>
 ```
-- Run the demo setup playbook
+
+#### Run the demo setup playbook
 ```bash
-ansible-playbook playbooks/demo-setup.yml
+ansible-playbook playbooks/aap-demo-setup.yml
 ```
 The demo setup playbook will:
-- Enable "ClusterProxy" and "Managed ServiceAccount" feature on ACM
+- Enable "ClusterProxy" and "ManagedServiceAccount" feature on ACM
 - Create the nessary credential for connection to ACM in Ansible Automation Controller
 - Add this repository as a Project in Ansible Automation Controller
 - Create cluster inventory with ACM dynamic inventory plugin in Ansible Automation Controller
@@ -65,15 +67,17 @@ The demo setup playbook will:
     - You can launch the job again and modify `"state": "absent"` to remove the created namespace on the selected clusters
 
 ### Cleanup after demo
-- clone this repo to your local machine
+#### Clone this repo to your local machine
 ```bash
 git clone https://github.com/TheRealHaoLiu/acm-ansible-collection-demo.git
 ```
-- change directory to the cloned repo
+
+#### Change directory to the cloned repo
 ```bash
 cd acm-ansible-collection-demo
 ```
-- Setup environment variable for Ansible Automation Controller
+
+#### Setup environment variable for Ansible Automation Controller
 ```bash
 export CONTROLLER_HOST=<ansible automation controller URL>
 export CONTROLLER_USERNAME=<username>
@@ -81,14 +85,110 @@ export CONTROLLER_PASSWORD=<password>
 export CONTROLLER_TOKEN=`awx login | jq -r .token`
 export CONTROLLER_VERIFY_SSL=no
 ```
-- Setup environment variable for ACM Ansible Collection modules
+
+#### Setup environment variable for ACM Ansible Collection modules
 ```bash
-export K8S_AUTH_KUBECONFIG=<path to kubeconfig file>
+export K8S_AUTH_KUBECONFIG=<path to kubeconfig file for ACM>
 ```
-- Run the demo cleanup playbook
+#### Run the demo cleanup playbook
 ```bash
-ansible-playbook playbooks/demo-cleanup.yml
+ansible-playbook playbooks/aap-demo-cleanup.yml
 ```
 The demo setup playbook will:
-- Disable "Cluster Proxy" and "Managed ServiceAccount" feature on ACM
+- Disable "ClusterProxy" and "ManagedServiceAccount" feature on ACM
 - Delete all resources created by demo setup from Ansible Automation Controller
+
+## Setup and run the demo without Ansible Automation Controller
+### Prerequisites
+- Ansible
+- An working deployment of Red Hat Advance Cluster Management (ACM) 2.5+
+- Kubernetes cluster managed by Red Hat Advance Cluster Management (ACM)
+
+### Setup the demo on your laptop
+#### Fork and Clone this repository to your local machine
+#### Change directory to the cloned repo
+```bash
+cd acm-ansible-collection-demo
+```
+
+#### Install required collections
+```bash
+ansible-galaxy collection install -r collections/requirements.yml
+```
+
+#### Setup environment variable for ACM Ansible Collection modules
+```bash
+export K8S_AUTH_KUBECONFIG=<path to kubeconfig file for ACM>
+```
+
+#### Run the demo setup playbook
+```bash
+ansible-playbook playbooks/local-demo-setup.yml
+```
+The demo setup playbook will:
+- Enable "ClusterProxy" and "ManagedServiceAccount" feature on ACM
+
+### Run the demo on your laptop
+#### Try out the dynamic inventory plugin
+```bash
+ansible-inventory -i inventories/cluster-inventory-example.yml --list
+```
+
+#### Try out generate kubeconfig files for the clusters
+```bash
+ansible-playbook playbooks/create-kubeconfig.yml -i inventories/cluster-inventory-example.yml -e target_hosts=all-managed-clusters
+```
+
+The playbook will:
+- Setup "ManagedServiceAccount" and "ClusterProxy" addon on the selected clusters
+- Generate a kubeconfig file in the `kubeconfig` directory for each of the selected clusters
+- The generated kubeconfig files will using "ClusterProxy" to connect to the clusters
+- The generated kubeconfig files will using "ManagedServiceAccount" to authenticate to the clusters
+- **SECURITY NOTE**: By default the created "ManagedServiceAccount" will have the `cluster-admin` ClusterRole and does not have expiration time set. The cleanup playbook will remove the created "ManagedServiceAccount" and render the credential in kubeconfig useless.
+
+#### Try out the multicluster management demo playbook
+To create a namespace named `cool-app` on all clusters managed by ACM
+```bash
+ansible-playbook playbooks/cluster-mgmt.yml -i inventories/cluster-inventory-example.yml -e target_hosts=all-managed-clusters -e state=absent -e namespace=cool-app
+```
+
+To remove the namespace named `cool-app` on all clusters managed by ACM
+```bash
+ansible-playbook playbooks/cluster-mgmt.yml -i inventories/cluster-inventory-example.yml -e target_hosts=all-managed-clusters -e state=absent -e namespace=cool-app
+```
+
+This playbook will:
+- Setup "ManagedServiceAccount" and "ClusterProxy" addon on the selected clusters
+- Connect to the selected clusters using these ACM features
+- Create or delete a specified namespace on of all selected clusters (this can be modify to do literally ANYTHING you want to do!)
+
+### Cleanup after demo
+#### Clone this repo to your local machine
+```bash
+git clone https://github.com/TheRealHaoLiu/acm-ansible-collection-demo.git
+```
+
+#### Change directory to the cloned repo
+```bash
+cd acm-ansible-collection-demo
+```
+
+#### Setup environment variable for ACM Ansible Collection modules
+```bash
+export K8S_AUTH_KUBECONFIG=<path to kubeconfig file for ACM>
+```
+
+#### Run the demo cleanup playbook
+```bash
+ansible-playbook playbooks/local-demo-cleanup.yml
+```
+
+The demo cleanup playbook will:
+- Disable "ClusterProxy" and "ManagedServiceAccount" feature on ACM
+- All ManagedServiceAccount created will be deleted and render the credentials in kubeconfig useless
+
+## Modification that you can do to the demo (DEFINATELY TRY THIS!)
+- Modify the dynamic inventory grouping in `inventories/cluster-inventory-example.yml`
+- Add your own cool scenario in the `roles/cool-things-you-do` role
+- Modify or add your RBAC configuration for your cool role in `k8s-rbac` directory (or use cluster-admin /shrug)
+- Modify `playbooks/cluster-mgmt.yml` to run `roles/cool-things-you-do`
