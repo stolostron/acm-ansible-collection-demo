@@ -5,7 +5,7 @@ https://galaxy.ansible.com/stolostron/core
 ## Table of Contents
 * [Set up and run the demo from Ansible Automation Controller](#setup-and-run-the-demo-from-ansible-automation-controller)
 * [Set up and run the demo without Ansible Automation Controller](#setup-and-run-the-demo-without-ansible-automation-controller)
-* [Modification that you can do to the demo (DEFINATELY TRY THIS!)](#modification-that-you-can-do-to-the-demo-definately-try-this)
+* [Modification that you can do to the demo (DEFINITELY TRY THIS!)](#modification-that-you-can-do-to-the-demo-definitely-try-this)
 
 ## Set up and run the demo from Ansible Automation Controller
 ### Prerequisites
@@ -68,10 +68,6 @@ The demo setup playbook will:
     - You can launch the job again and modify `"state": "absent"` to remove the created namespace on the selected clusters
 
 ### Cleanup after demo
-#### Clone this repo to your local machine
-```bash
-git clone https://github.com/TheRealHaoLiu/acm-ansible-collection-demo.git
-```
 
 #### Change directory to the cloned repo
 ```bash
@@ -165,10 +161,6 @@ This playbook will:
 - Create or delete a specified namespace on of all selected clusters (this can be modified to do literally ANYTHING you want to do!)
 
 ### Cleanup after demo
-#### Clone this repo to your local machine
-```bash
-git clone https://github.com/TheRealHaoLiu/acm-ansible-collection-demo.git
-```
 
 #### Change directory to the cloned repo
 ```bash
@@ -189,7 +181,7 @@ The demo cleanup playbook will:
 - Disable "ClusterProxy" and "ManagedServiceAccount" featureson ACM
 - All ManagedServiceAccount created will be deleted and render the credentials in kubeconfig useless
 
-## Modification that you can do to the demo (DEFINATELY TRY THIS!)
+## Modification that you can do to the demo (DEFINITELY TRY THIS!)
 - Modify the dynamic inventory grouping in `inventories/cluster-inventory-example.yml`
 - Add your own cool scenario in the `roles/cool-things-you-do` role
 - Modify or add your RBAC configuration for your cool role in `k8s-rbac` directory (or use cluster-admin /shrug)
