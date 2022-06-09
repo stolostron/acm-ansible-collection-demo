@@ -1,5 +1,5 @@
   - name: "Removing managed ServiceAccount"
-    ocmplus.cm.managed_serviceaccount:
+    stolostron.core.managed_serviceaccount:
       state: absent
       hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
       managed_cluster: "{{ hostvars[inventory_hostname].cluster_name }}"

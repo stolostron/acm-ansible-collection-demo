@@ -1,0 +1,77 @@
+- name: "Setup ACM Ansible Collection the Demo"
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: "Enable 'Cluster Proxy' Feature on ACM Hub"
+    stolostron.core.cluster_management_addon:
+      hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
+      addon_name: cluster-proxy
+      state: present
+  - name: "Enable 'Manged ServiceAccount' Feature on ACM Hub"
+    stolostron.core.cluster_management_addon:
+      hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
+      addon_name: managed-serviceaccount
+      state: present
+  - name: "Create 'ACM KubeConfig' Credential Type"
+    awx.awx.credential_type:
+      name: "ACM KubeConfig"
+      kind: "cloud"
+      inputs: "{{ lookup('file', '../tower-config/credential_inputs_kubeconfig.json') }}"
+      injectors: "{{ lookup('file', '../tower-config/credential_injector_kubeconfig.json') }}"
+      state: present
+  - name: "Generate minified kubeconfig from current 'K8S_AUTH_KUBECONFIG' context"
+    shell: "kubectl config view --raw=true --minify=true --kubeconfig=$K8S_AUTH_KUBECONFIG"
+    register: kubeconfig
+  - name: "Create 'ACM Hub' Credential"
+    awx.awx.credential:
+      name: "ACM Hub"
+      organization: "Default"
+      credential_type: "ACM KubeConfig"
+      inputs: 
+        kube_config: "{{ kubeconfig.stdout }}"
+      state: present
+  - name: "Get current GIT repo origin URL"
+    shell: "git config --get remote.origin.url"
+    register: repo_url
+  - name: "Get current GIT branch name"
+    shell: "git rev-parse --abbrev-ref HEAD"
+    register: branch_name
+  - name: "Create 'ACM Ansible Collection Demo Project' from this github project"
+    awx.awx.project:
+      name: "ACM Ansible Collection Demo"
+      organization: "Default"
+      scm_type: "git"
+      scm_url: "{{ repo_url.stdout }}"
+      scm_branch: "{{ branch_name.stdout }}"
+      state: present
+      update_project: yes
+  - name: "Create 'ACM Cluster Inventory'"
+    awx.awx.inventory:
+      name: "ACM Cluster Inventory"
+      organization: "Default"
+      state: present
+  - name: "Add dynamic inventory source to 'ACM Cluster Inventory'"
+    awx.awx.inventory_source:
+      name: "ACM Dynamic Cluster Inventory Example"
+      inventory: "ACM Cluster Inventory"
+      credential: "ACM Hub"
+      source: "scm"
+      source_project: "ACM Ansible Collection Demo"
+      source_path: "inventories/cluster-inventory-example.yml"
+      state: present
+  - name: "Create 'K8S MultiCluster Management Demo' Job Template"
+    awx.awx.job_template:
+      name: "K8S MultiCluster Management Demo"
+      job_type: "run"
+      organization: "Default"
+      inventory: "ACM Cluster Inventory"
+      project: "ACM Ansible Collection Demo"
+      playbook: "playbooks/cluster-mgmt.yml"
+      credentials:
+        - "ACM Hub"
+      extra_vars:
+        target_hosts: all-managed-clusters
+        state: present
+        namespace: cool-app
+      ask_variables_on_launch: yes
+      state: "present"

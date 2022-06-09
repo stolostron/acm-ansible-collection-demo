@@ -1,5 +1,5 @@
 - name: "Enabled cluster-proxy addon"
-  ocmplus.cm.managedcluster_addon:
+  stolostron.core.managedcluster_addon:
     state: present
     hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
     managed_cluster: "{{ hostvars[inventory_hostname].cluster_name }}"
@@ -7,7 +7,7 @@
     wait: True
     timeout: 120
 - name: "Enabled managed-serviceaccount addon"
-  ocmplus.cm.managedcluster_addon:
+  stolostron.core.managedcluster_addon:
     state: present
     hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
     managed_cluster: "{{ hostvars[inventory_hostname].cluster_name }}"
@@ -15,14 +15,14 @@
     wait: True
     timeout: 120
 - name: "Get ClusterProxy URL"
-  ocmplus.cm.cluster_proxy:
+  stolostron.core.cluster_proxy:
     hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
     managed_cluster: "{{ hostvars[inventory_hostname].cluster_name }}"
     wait: yes
     timeout: 60
   register: cluster_proxy
 - name: "Get managed ServiceAccount token for dynamic ServiceAccount"
-  ocmplus.cm.managed_serviceaccount:
+  stolostron.core.managed_serviceaccount:
     state: present
     generate_name: "{{ serviceaccount_generate_name }}"
     hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
@@ -33,7 +33,7 @@
   register: managed_serviceaccount
   when: serviceaccount_generate_name is defined
 - name: "Configure ServiceAccount RBAC"
-  ocmplus.cm.managed_serviceaccount_rbac:
+  stolostron.core.managed_serviceaccount_rbac:
     hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
     managed_cluster: "{{ hostvars[inventory_hostname].cluster_name }}"
     managed_serviceaccount_name: "{{ managed_serviceaccount.name }}"
