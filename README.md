@@ -1,5 +1,5 @@
 # acm-ansible-collection-demo
-A collection of playbooks that show of the capability of the Red Hat Advance Cluster Management(ACM) Ansible Collection 
+A collection of [Ansible](https://www.ansible.com/) playbooks that showcase the capability of the [Red Hat Advance Cluster Management (ACM)](https://www.redhat.com/en/technologies/management/advanced-cluster-management) Ansible Collection 
 https://galaxy.ansible.com/stolostron/core
 
 ## Table of Contents
@@ -9,9 +9,9 @@ https://galaxy.ansible.com/stolostron/core
 
 ## Set up and run the demo from Ansible Automation Controller
 ### Prerequisites
-- Ansible
-- A working deployment of Ansible Automation Controller
-- A working deployment of Red Hat Advance Cluster Management 2.5+
+- [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+- A working deployment of [Ansible Automation Controller](https://www.ansible.com/products/controller)
+- A working deployment of [Red Hat Advance Cluster Management](https://www.redhat.com/en/technologies/management/advanced-cluster-management) 2.5+
 - Kubernetes clusters managed by Red Hat Advance Cluster Management
 
 ### Demo setup
@@ -100,9 +100,9 @@ The demo setup playbook will:
 
 ## Set up and run the demo without Ansible Automation Controller
 ### Prerequisites
-- Ansible
-- An working deployment of Red Hat Advance Cluster Management (ACM) 2.5+
-- Kubernetes cluster managed by Red Hat Advance Cluster Management (ACM)
+- [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+- An working deployment of [Red Hat Advance Cluster Management](https://www.redhat.com/en/technologies/management/advanced-cluster-management) 2.5+
+- Kubernetes cluster managed by [Red Hat Advance Cluster Management](https://www.redhat.com/en/technologies/management/advanced-cluster-management)
 
 ### Set up the demo on your laptop
 #### Fork and Clone this repository to your local machine
