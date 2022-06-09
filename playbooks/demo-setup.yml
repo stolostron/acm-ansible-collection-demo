@@ -3,6 +3,16 @@
   hosts: localhost
   gather_facts: false
   tasks:
+  - name: "Enable 'Cluster Proxy' Feature on ACM Hub"
+    stolostron.core.cluster_management_addon:
+      hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
+      addon_name: cluster-proxy
+      state: present
+  - name: "Enable 'Manged ServiceAccount' Feature on ACM Hub"
+    stolostron.core.cluster_management_addon:
+      hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
+      addon_name: managed-serviceaccount
+      state: present
   - name: "Create 'ACM KubeConfig' Credential Type"
     awx.awx.credential_type:
       name: "ACM KubeConfig"
@@ -10,7 +20,6 @@
       inputs: "{{ lookup('file', '../tower-config/credential_inputs_kubeconfig.json') }}"
       injectors: "{{ lookup('file', '../tower-config/credential_injector_kubeconfig.json') }}"
       state: present
-  # TODO: validate the cluster current KUBECONFIG context point to is ACM than error out
   - name: "Generate minified kubeconfig from current 'K8S_AUTH_KUBECONFIG' context"
     shell: "kubectl config view --raw=true --minify=true --kubeconfig=$K8S_AUTH_KUBECONFIG"
     register: kubeconfig
@@ -50,6 +59,7 @@
       source: "scm"
       source_project: "ACM Ansible Collection Demo"
       source_path: "inventories/cluster-inventory-example.yml"
+      state: present
   - name: "Create 'K8S MultiCluster Management Demo' Job Template"
     awx.awx.job_template:
       name: "K8S MultiCluster Management Demo"
@@ -60,18 +70,9 @@
       playbook: "playbooks/cluster-mgmt.yml"
       credentials:
         - "ACM Hub"
-      state: "present"
       extra_vars:
         target_hosts: all-managed-clusters
         state: present
         namespace: cool-app
-  - name: "Enable 'Cluster Proxy' Feature on ACM Hub"
-    stolostron.core.cluster_management_addon:
-      state: present
-      hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
-      addon_name: cluster-proxy
-  - name: "Enable 'Manged ServiceAccount' Feature on ACM Hub"
-    stolostron.core.cluster_management_addon:
-      state: present
-      hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
-      addon_name: managed-serviceaccount
+      ask_variables_on_launch: yes
+      state: "present"
