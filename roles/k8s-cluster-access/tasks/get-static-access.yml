@@ -4,7 +4,7 @@
     hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
     managed_cluster: "{{ hostvars[inventory_hostname].cluster_name }}"
     addon_name: cluster-proxy
-    wait: True
+    wait: true
     timeout: 120
 - name: "Enabled managed-serviceaccount addon"
   stolostron.core.managedcluster_addon:
@@ -12,13 +12,13 @@
     hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
     managed_cluster: "{{ hostvars[inventory_hostname].cluster_name }}"
     addon_name: managed-serviceaccount
-    wait: True
+    wait: true
     timeout: 120
 - name: "Get ClusterProxy URL"
   stolostron.core.cluster_proxy:
     hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
     managed_cluster: "{{ hostvars[inventory_hostname].cluster_name }}"
-    wait: yes
+    wait: true
     timeout: 60
   register: cluster_proxy
 - name: "Get managed ServiceAccount token for static ServiceAccount"
@@ -27,7 +27,7 @@
     name: "{{ serviceaccount_name }}"
     hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
     managed_cluster: "{{ hostvars[inventory_hostname].cluster_name }}"
-    wait: yes
+    wait: true
     timeout: 60
   register: managed_serviceaccount
   when: serviceaccount_name is defined
@@ -37,7 +37,7 @@
     managed_cluster: "{{ hostvars[inventory_hostname].cluster_name }}"
     managed_serviceaccount_name: "{{ managed_serviceaccount.name }}"
     rbac_template: "{{ rbac_template }}"
-    wait: yes
+    wait: true
     timeout: 60
   register: result
   until: result.failed == false
