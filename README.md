@@ -138,7 +138,7 @@ ansible-inventory -i inventories/cluster-inventory-example.yml --list
 
 #### Try out generate kubeconfig files for the clusters
 ```bash
-ansible-playbook playbooks/create-kubeconfig.yml -i inventories/cluster-inventory-example.yml -e target_hosts=all-managed-clusters
+ansible-playbook playbooks/create-kubeconfig.yml -i inventories/cluster-inventory-example.yml -e target_hosts=all_managed_clusters
 ```
 
 The playbook will:
@@ -151,12 +151,12 @@ The playbook will:
 #### Try out the multicluster management demo playbook
 To create a namespace named `cool-app` on all clusters managed by ACM
 ```bash
-ansible-playbook playbooks/cluster-mgmt.yml -i inventories/cluster-inventory-example.yml -e target_hosts=all-managed-clusters -e state=absent -e namespace=cool-app
+ansible-playbook playbooks/cluster-mgmt.yml -i inventories/cluster-inventory-example.yml -e target_hosts=all_managed_clusters -e state=absent -e namespace=cool-app
 ```
 
 To remove the namespace named `cool-app` on all clusters managed by ACM
 ```bash
-ansible-playbook playbooks/cluster-mgmt.yml -i inventories/cluster-inventory-example.yml -e target_hosts=all-managed-clusters -e state=absent -e namespace=cool-app
+ansible-playbook playbooks/cluster-mgmt.yml -i inventories/cluster-inventory-example.yml -e target_hosts=all_managed_clusters -e state=absent -e namespace=cool-app
 ```
 
 This playbook will:

@@ -4,6 +4,6 @@
       hub_kubeconfig: "{{ lookup('env', 'K8S_AUTH_KUBECONFIG') }}"
       managed_cluster: "{{ hostvars[inventory_hostname].cluster_name }}"
       name: "{{ managed_serviceaccount.name }}"
-      wait: yes
+      wait: true
       timeout: 60
     when: managed_serviceaccount is defined

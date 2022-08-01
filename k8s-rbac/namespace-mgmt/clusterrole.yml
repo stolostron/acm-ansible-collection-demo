@@ -3,9 +3,9 @@ kind: ClusterRole
 metadata:
   name: namespace-mgmt
 rules:
-- apiGroups:
-  - ""
-  resources:
-  - namespaces
-  verbs:
-  - '*'
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+    verbs:
+      - '*'
