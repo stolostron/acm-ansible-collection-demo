@@ -27,7 +27,7 @@
       name: "ACM Hub"
       organization: "Default"
       credential_type: "ACM KubeConfig"
-      inputs: 
+      inputs:
         kube_config: "{{ kubeconfig.stdout }}"
       state: present
   - name: "Get current GIT repo origin URL"
@@ -44,7 +44,7 @@
       scm_url: "{{ repo_url.stdout }}"
       scm_branch: "{{ branch_name.stdout }}"
       state: present
-      update_project: yes
+      update_project: true
   - name: "Create 'ACM Cluster Inventory'"
     awx.awx.inventory:
       name: "ACM Cluster Inventory"
@@ -70,8 +70,8 @@
       credentials:
         - "ACM Hub"
       extra_vars:
-        target_hosts: all-managed-clusters
+        target_hosts: all_managed_clusters
         state: present
         namespace: cool-app
-      ask_variables_on_launch: yes
+      ask_variables_on_launch: true
       state: "present"
