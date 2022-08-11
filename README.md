@@ -27,8 +27,8 @@ cd acm-ansible-collection-demo
 export CONTROLLER_HOST=<ansible automation controller URL>
 export CONTROLLER_USERNAME=<username>
 export CONTROLLER_PASSWORD=<password>
-export CONTROLLER_TOKEN=`awx login | jq -r .token`
 export CONTROLLER_VERIFY_SSL=no
+export CONTROLLER_TOKEN=`awx login | jq -r .token`
 ```
 
 #### Set up environment variables for ACM Ansible Collection modules
