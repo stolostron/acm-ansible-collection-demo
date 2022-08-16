@@ -3,13 +3,13 @@
   connection: local
   gather_facts: false
   tasks:
-    - block: 
+    - block:
         - include_tasks: ../roles/k8s-cluster-access/tasks/get-temp-access.yml
           vars:
             rbac_template: ../k8s-rbac/namespace-mgmt
             serviceaccount_generate_name: "cluster-mgmt-"
             ttl: 60
-        - include_role: 
+        - include_role:
             name: ../roles/create-namespace
           vars:
             namespace_name: "{{ namespace }}"
