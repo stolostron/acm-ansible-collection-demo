@@ -3,9 +3,9 @@ A collection of [Ansible](https://www.ansible.com/) playbooks that showcase the 
 https://galaxy.ansible.com/stolostron/core
 
 ## Table of Contents
-* [Set up and run the demo from Ansible Automation Controller](#setup-and-run-the-demo-from-ansible-automation-controller)
-* [Set up and run the demo without Ansible Automation Controller](#setup-and-run-the-demo-without-ansible-automation-controller)
-* [Modification that you can do to the demo (DEFINATELY TRY THIS!)](#modification-that-you-can-do-to-the-demo-definately-try-this)
+* [Set up and run the demo from Ansible Automation Controller](#set-up-and-run-the-demo-from-ansible-automation-controller)
+* [Set up and run the demo without Ansible Automation Controller](#set-up-and-run-the-demo-without-ansible-automation-controller)
+* [Modification that you can do to the demo (DEFINITELY TRY THIS!)](#modification-that-you-can-do-to-the-demo-definitely-try-this)
 
 ## Set up and run the demo from Ansible Automation Controller
 ### Prerequisites
@@ -41,8 +41,8 @@ export K8S_AUTH_KUBECONFIG=<path to kubeconfig file for ACM>
 ansible-playbook playbooks/aap-demo-setup.yml
 ```
 The demo setup playbook will:
-- Enable "ClusterProxy" and "ManagedServiceAccount" featureson ACM
-- Create the nessary credential for connection to ACM in Ansible Automation Controller
+- Enable "ClusterProxy" and "ManagedServiceAccount" features on ACM
+- Create the necessary credential for connection to ACM in Ansible Automation Controller
 - Add this repository as a Project in Ansible Automation Controller
 - Create cluster inventory with ACM dynamic inventory plugin in Ansible Automation Controller
 - Create Job Template from the cluster-mgmt.yml playbook in Ansible Automation Controller
@@ -96,7 +96,7 @@ export K8S_AUTH_KUBECONFIG=<path to kubeconfig file for ACM>
 ansible-playbook playbooks/aap-demo-cleanup.yml
 ```
 The demo setup playbook will:
-- Disable "ClusterProxy" and "ManagedServiceAccount" featureson ACM
+- Disable "ClusterProxy" and "ManagedServiceAccount" features on ACM
 - Delete all resources created by demo setup from Ansible Automation Controller
 
 ## Set up and run the demo without Ansible Automation Controller
@@ -118,6 +118,11 @@ cd acm-ansible-collection-demo
 ansible-galaxy collection install -r collections/requirements.yml
 ```
 
+#### Install required python libraries
+```bash
+pip install kubernetes
+```
+
 #### Set up environment variables for ACM Ansible Collection modules
 ```bash
 export K8S_AUTH_KUBECONFIG=<path to kubeconfig file for ACM>
@@ -128,7 +133,7 @@ export K8S_AUTH_KUBECONFIG=<path to kubeconfig file for ACM>
 ansible-playbook playbooks/local-demo-setup.yml
 ```
 The demo setup playbook will:
-- Enable "ClusterProxy" and "ManagedServiceAccount" featureson ACM
+- Enable "ClusterProxy" and "ManagedServiceAccount" features on ACM
 
 ### Run the demo on your laptop
 #### Try out the dynamic inventory plugin
@@ -144,14 +149,14 @@ ansible-playbook playbooks/create-kubeconfig.yml -i inventories/cluster-inventor
 The playbook will:
 - Set up "ClusterProxy" and "ManagedServiceAccount"  addons on the selected clusters
 - Generate a kubeconfig file in the `kubeconfig` directory for each of the selected clusters
-- The generated kubeconfig files will using "ClusterProxy" to connect to the clusters
-- The generated kubeconfig files will using "ManagedServiceAccount" to authenticate to the clusters
+- The generated kubeconfig files will use "ClusterProxy" to connect to the clusters
+- The generated kubeconfig files will use "ManagedServiceAccount" to authenticate to the clusters
 - **SECURITY NOTE**: By default the created "ManagedServiceAccount" will have the `cluster-admin` ClusterRole and does not have expiration time set. The cleanup playbook will remove the created "ManagedServiceAccount" and render the credential in kubeconfig useless.
 
 #### Try out the multicluster management demo playbook
 To create a namespace named `cool-app` on all clusters managed by ACM
 ```bash
-ansible-playbook playbooks/cluster-mgmt.yml -i inventories/cluster-inventory-example.yml -e target_hosts=all-managed-clusters -e state=absent -e namespace=cool-app
+ansible-playbook playbooks/cluster-mgmt.yml -i inventories/cluster-inventory-example.yml -e target_hosts=all-managed-clusters -e state=present -e namespace=cool-app
 ```
 
 To remove the namespace named `cool-app` on all clusters managed by ACM
@@ -186,10 +191,10 @@ ansible-playbook playbooks/local-demo-cleanup.yml
 ```
 
 The demo cleanup playbook will:
-- Disable "ClusterProxy" and "ManagedServiceAccount" featureson ACM
+- Disable "ClusterProxy" and "ManagedServiceAccount" features on ACM
 - All ManagedServiceAccount created will be deleted and render the credentials in kubeconfig useless
 
-## Modification that you can do to the demo (DEFINATELY TRY THIS!)
+## Modification that you can do to the demo (DEFINITELY TRY THIS!)
 - Modify the dynamic inventory grouping in `inventories/cluster-inventory-example.yml`
 - Add your own cool scenario in the `roles/cool-things-you-do` role
 - Modify or add your RBAC configuration for your cool role in `k8s-rbac` directory (or use cluster-admin /shrug)
