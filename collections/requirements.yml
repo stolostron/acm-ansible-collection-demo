@@ -1,5 +1,5 @@
 collections:
 - name: stolostron.core
-  version: 0.0.1
+  version: 0.0.2
 - name: kubernetes.core
 - name: awx.awx
