@@ -36,6 +36,8 @@ export CONTROLLER_VERIFY_SSL=no
 export K8S_AUTH_KUBECONFIG=<path to kubeconfig file for ACM>
 ```
 
+> NOTE: See [this](#clusterrole) `ClusterRole` for the minimal access to leverage this collection without being `cluster-admin`.
+
 #### Run the demo setup playbook
 ```bash
 ansible-playbook playbooks/aap-demo-setup.yml
@@ -199,3 +201,130 @@ The demo cleanup playbook will:
 - Add your own cool scenario in the `roles/cool-things-you-do` role
 - Modify or add your RBAC configuration for your cool role in `k8s-rbac` directory (or use cluster-admin /shrug)
 - Modify `playbooks/cluster-mgmt.yml` to run `roles/cool-things-you-do`
+
+## Examples
+
+### ClusterRole
+
+```yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: stolostron:ansible-collection:core
+rules:
+- apiGroups:
+  - cluster.open-cluster-management.io
+  resources:
+  - managedclusters
+  - managedclusters/finalizers
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - clusterview.open-cluster-management.io
+  resources:
+  - managedclusters
+  - managedclusters/finalizers
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - authentication.open-cluster-management.io
+  resources:
+  - managedserviceaccounts
+  - managedserviceaccounts/status
+  - managedserviceaccounts/finalizers
+  verbs:
+  - '*'
+- apiGroups:
+  - work.open-cluster-management.io
+  resources:
+  - manifestworks
+  - manifestworks/finalizers
+  verbs:
+  - '*'
+- apiGroups:
+  - addon.open-cluster-management.io
+  resources:
+  - managedclusteraddons
+  - managedclusteraddons/status
+  - managedclusteraddons/finalizers
+  - clustermanagementaddons
+  - clustermanagementaddons/status
+  - clustermanagementaddons/finalizers
+  verbs:
+  - '*'
+- apiGroups:
+  - proxy.open-cluster-management.io
+  resources:
+  - managedproxyconfigurations
+  - managedproxyconfigurations/status
+  - managedproxyconfigurations/finalizers
+  verbs:
+  - '*'
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests
+  - certificatesigningrequests/approval
+  - certificatesigningrequests/status
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - patch
+- apiGroups:
+  - certificates.k8s.io
+  resourceNames:
+  - open-cluster-management.io/proxy-agent-signer
+  - kubernetes.io/kube-apiserver-client
+  resources:
+  - signers
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - patch
+- apiGroups:
+  - route.openshift.io
+  resources:
+  - routes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  - services
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+
+```
+
+### ClusterRoleBinding
+
+```yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: stolostron-ansible-collection-crb
+subjects:
+  - kind: ServiceAccount
+    name: lab-rbac-sa
+    namespace: open-cluster-management-pipelines-rbac
+roleRef:
+  kind: ClusterRole
+  name: stolostron:ansible-collection:core
+  apiGroup: rbac.authorization.k8s.io
+```
